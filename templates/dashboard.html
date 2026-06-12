@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row g-4 justify-content-center">
+
+        <!-- Create Ticket -->
+        <div class="col-md-5">
+            <div class="card p-5 text-center shadow-sm"
+                 style="cursor:pointer;"
+                 onclick="window.location.href='/create-ticket-page/'">
+
+                <h3>📝 Create Ticket</h3>
+                <p>Raise a new support request</p>
+
+            </div>
+        </div>
+
+        <!-- My Tickets -->
+        <div class="col-md-5">
+            <div class="card p-5 text-center shadow-sm"
+                 style="cursor:pointer;"
+                 onclick="window.location.href='/my-tickets-page/'">
+
+                <h3>🎫 My Tickets</h3>
+                <p>View your submitted tickets</p>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+async function checkAuth() {
+
+    let token = localStorage.getItem("token");
+
+    if (!token) {
+        window.location.href = "/";
+        return;
+    }
+
+    let res = await fetch("/api/test-auth/", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    });
+
+    if (!res.ok) {
+        localStorage.removeItem("token");
+        window.location.href = "/";
+    }
+}
+
+checkAuth();
+</script>
+{% endblock %}

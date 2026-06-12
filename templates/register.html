@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+
+    <div class="col-md-5">
+
+        <div class="card p-4">
+
+            <h3 class="text-center mb-3">Register</h3>
+
+            <input id="username" class="form-control mb-2" placeholder="Username">
+            <input id="email" class="form-control mb-2" placeholder="Email" onblur="checkEmail()">
+            <p id="emailMsg" class="text-danger"></p>
+            <input id="password" type="password" class="form-control mb-3" placeholder="Password">
+
+            <button class="btn btn-success w-100" onclick="register()">Register</button>
+
+            <p class="text-center mt-3">
+                Already have an account?
+                <a href="/" class="btn btn-link">Login</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let emailOk = true;
+
+async function checkEmail() {
+
+    let email = document.getElementById("email").value;
+
+    let res = await fetch("/api/check-email/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email })
+    });
+
+    let data = await res.json();
+
+    if(data.exists){
+        document.getElementById("emailMsg").innerText =
+            "Email already exists!";
+        emailOk = false;
+    } else {
+        document.getElementById("emailMsg").innerText = "";
+        emailOk = true;
+    }
+}
+
+async function register() {
+
+    if(!emailOk){
+        alert("Please use a different email");
+        return;
+    }
+
+    await fetch("/api/register/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username.value,
+            email: email.value,
+            password: password.value
+        })
+    });
+
+    alert("Registration successful");
+    window.location.href = "/";
+}
+
+</script>
+
+{% endblock %}

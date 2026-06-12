@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+
+    <div class="col-md-4">
+
+        <div class="card p-4">
+
+            <h3 class="text-center mb-3">Login</h3>
+
+            <input id="username" class="form-control mb-2" placeholder="Username">
+            <input id="password" type="password" class="form-control mb-3" placeholder="Password">
+
+            <button class="btn btn-primary w-100" onclick="login()">Login</button>
+
+            <p class="text-center mt-3">
+                <a href="/register-page/">Create Account</a>
+            </p>
+
+            <p class="text-center mt-3">
+                <a href="/forgot-password/">Forgot Password?</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+async function login() {
+
+    let res = await fetch("/api/login/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
+    });
+
+    let data = await res.json();
+
+    // ❌ IMPORTANT: STOP INVALID LOGIN
+    if (!res.ok) {
+        alert(data.error || "Login failed");
+        return;
+    }
+
+    // Save token only if login SUCCESS
+    localStorage.setItem("token", data.access);
+
+    window.location.href = "/dashboard/";
+}
+</script>
+
+{% endblock %}

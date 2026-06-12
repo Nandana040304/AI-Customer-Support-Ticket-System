@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-md-6">
+
+        <div class="card p-4">
+
+            <h3 class="mb-3">Create Support Ticket</h3>
+
+            <input id="title" class="form-control mb-2" placeholder="Ticket Title">
+
+            <textarea id="description" class="form-control mb-3" rows="5"
+                placeholder="Describe your issue..."></textarea>
+
+            <button class="btn btn-primary w-100" onclick="createTicket()">
+                Submit Ticket
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+   
+    if (!localStorage.getItem("token")) {
+        window.location.href = "/";
+    }
+
+    async function createTicket() {
+
+        let res = await fetch("/api/tickets/create/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({
+                title: title.value,
+                description: description.value
+            })
+        });
+
+        let data = await res.json();
+
+        if (!res.ok) {
+            alert("Error creating ticket");
+            return;
+        }
+
+        alert("Ticket created!\nCategory: " + data.category);
+
+        window.location.href = "/dashboard/";
+    }
+
+</script>
+
+{% endblock %}

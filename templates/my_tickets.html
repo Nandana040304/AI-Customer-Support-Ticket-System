@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">My Tickets</h3>
+
+<div id="tickets" class="row"></div>
+
+<script>
+if (!localStorage.getItem("token")) {
+        window.location.href = "/";
+    }
+async function loadTickets() {
+
+    let res = await fetch("/api/tickets/", {
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+    });
+
+    let data = await res.json();
+
+    let html = "";
+
+    if (data.length === 0) {
+        html = `
+            <div class="text-center text-muted">
+                No tickets found
+            </div>
+        `;
+    }
+
+    data.forEach(t => {
+
+        let color = "secondary";
+
+        if (t.status === "OPEN") color = "danger";
+        if (t.status === "IN_PROGRESS") color = "warning";
+        if (t.status === "RESOLVED") color = "success";
+
+        html += `
+        <div class="col-md-6 mb-3">
+            <div class="card p-3 shadow-sm">
+
+                <h5>${t.title}</h5>
+                <p>${t.description}</p>
+
+                <p><b>AI Response:</b> ${t.ai_response || "Pending..."}</p>
+
+                <span class="badge bg-info">${t.category || "Uncategorized"}</span>
+
+                <span class="badge bg-${color} float-end">
+                    ${t.status}
+                </span>
+
+            </div>
+        </div>
+        `;
+    });
+
+    document.getElementById("tickets").innerHTML = html;
+}
+
+
+window.onload = loadTickets;
+
+</script>
+
+{% endblock %}

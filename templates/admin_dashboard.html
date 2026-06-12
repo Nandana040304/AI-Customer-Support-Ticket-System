@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">
+        Admin Dashboard
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card p-4 text-center shadow">
+                <h3 id="totalUsers">0</h3>
+                <p>Total Users</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 text-center shadow">
+                <h3 id="totalTickets">0</h3>
+                <p>Total Tickets</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-4 text-center shadow">
+                <h3 id="openTickets">0</h3>
+                <p>Open Tickets</p>
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h4>All Tickets</h4>
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Title</th>
+                <th>Current Status</th>
+                <th>Change Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody id="ticketTable">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<script>
+
+async function loadTickets(){
+
+    let token =
+        localStorage.getItem("admin_token");
+
+    let res = await fetch(
+        "/api/admin-tickets/",
+        {
+            headers:{
+                "Authorization":
+                "Bearer " + token
+            }
+        }
+    );
+
+    let response = await res.json();
+
+document.getElementById(
+    "totalUsers"
+).innerText =
+response.total_users;
+
+document.getElementById(
+    "totalTickets"
+).innerText =
+response.total_tickets;
+
+document.getElementById(
+    "openTickets"
+).innerText =
+response.open_tickets;
+
+let data =
+response.tickets;
+
+    let rows = "";
+
+    data.forEach(ticket=>{
+
+        rows += `
+        <tr>
+            <td>${ticket.id}</td>
+            <td>${ticket.user}</td>
+            <td>${ticket.title}</td>
+            <td>${ticket.status}</td>
+            <td>
+
+<select id="status-${ticket.id}" class="form-select">
+
+    <option value="OPEN"
+        ${ticket.status=="OPEN" ? "selected" : ""}>
+        OPEN
+    </option>
+
+    <option value="IN_PROGRESS"
+        ${ticket.status=="IN_PROGRESS" ? "selected" : ""}>
+        IN PROGRESS
+    </option>
+
+    <option value="RESOLVED"
+        ${ticket.status=="RESOLVED" ? "selected" : ""}>
+        RESOLVED
+    </option>
+
+</select>
+
+</td>
+
+<td>
+
+<button
+    onclick="updateStatus(${ticket.id})"
+    class="btn btn-success btn-sm">
+
+    Update
+
+</button>
+
+<button
+    onclick="deleteTicket(${ticket.id})"
+    class="btn btn-danger btn-sm">
+
+    Delete
+
+</button>
+
+</td>
+        </tr>
+        `;
+    });
+
+    document.getElementById(
+        "ticketTable"
+    ).innerHTML = rows;
+}
+
+loadTickets();
+
+
+async function updateStatus(ticketId){
+
+    let token =
+        localStorage.getItem("admin_token");
+
+    let status =
+        document.getElementById(
+            `status-${ticketId}`
+        ).value;
+
+    let res = await fetch(
+
+        `/api/tickets/${ticketId}/status/`,
+
+        {
+            method:"PATCH",
+
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":
+                    "Bearer " + token
+            },
+
+            body: JSON.stringify({
+                status: status
+            })
+        }
+    );
+
+    let data = await res.json();
+
+    if(res.ok){
+
+        alert(
+            "Status Updated Successfully"
+        );
+
+        loadTickets();
+    }
+    else{
+
+        alert(
+            data.error
+        );
+    }
+}
+
+async function deleteTicket(ticketId){
+
+    let confirmDelete =
+        confirm(
+            "Delete this ticket?"
+        );
+
+    if(!confirmDelete){
+        return;
+    }
+
+    let token =
+        localStorage.getItem(
+            "admin_token"
+        );
+
+    let res = await fetch(
+
+        `/api/tickets/${ticketId}/delete/`,
+
+        {
+            method:"DELETE",
+
+            headers:{
+                "Authorization":
+                "Bearer " + token
+            }
+        }
+    );
+
+    let data = await res.json();
+
+    if(res.ok){
+
+        alert(
+            data.message
+        );
+
+        loadTickets();
+    }
+    else{
+
+        alert(
+            data.error
+        );
+    }
+}
+
+
+
+
+</script>
+
+{% endblock %}

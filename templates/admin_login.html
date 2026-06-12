@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+
+    <div class="col-md-4">
+
+        <div class="card p-4">
+
+            <h3 class="text-center mb-3">
+                Admin Login
+            </h3>
+
+            <input
+                id="username"
+                class="form-control mb-3"
+                placeholder="Username">
+
+            <input
+                id="password"
+                type="password"
+                class="form-control mb-3"
+                placeholder="Password">
+
+            <button
+                class="btn btn-dark w-100"
+                onclick="adminLogin()">
+
+                Login
+
+            </button>
+
+            <p id="msg" class="mt-3 text-danger"></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function adminLogin() {
+
+    let res = await fetch("/api/admin-login-api/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value
+        })
+    });
+
+    let data = await res.json();
+
+    if(data.success){
+
+        localStorage.setItem(
+            "admin_token",
+            data.access
+        );
+
+        window.location.href =
+            "/admin-dashboard/";
+    }
+    else{
+
+        document.getElementById("msg")
+        .innerText = data.error;
+    }
+}
+
+</script>
+
+{% endblock %}
