@@ -26,9 +26,9 @@ load_dotenv()
 SECRET_KEY = 'django-insecure-@e8bd60g0hn#_%jlhbmr#h51z85=1la^a6v$^a2twn5o4d02=('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["ai-customer-support-ticket-system-1.onrender.com",]
 
 
 # Application definition
@@ -130,3 +130,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+CSRF_TRUSTED_ORIGINS = [
+    "https://ai-customer-support-ticket-system-1.onrender.com",
+]
