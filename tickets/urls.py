@@ -28,30 +28,9 @@ urlpatterns = [
     path('check-email/', check_email),
     path('reset-password-api/', reset_password),
     path('test-auth/', TestAuthView.as_view()),
-    path(
-    'admin-login/',
-    admin_login_page,
-    name='admin-login-page'
-),
-
-path(
-    'admin-dashboard/',
-    admin_dashboard_page,
-    name='admin-dashboard'
-),
-
-path(
-    'admin-login-api/',
-    admin_login
-),
-
-path(
-    'admin-tickets/',
-    AdminTicketsView.as_view()
-),
-
-path(
-    'tickets/<int:pk>/delete/',
-    DeleteTicketView.as_view()
-),
+    path('admin-login/',admin_login_page,name='admin-login-page'),
+    path('admin-dashboard/',admin_dashboard_page,name='admin-dashboard'),
+    path('admin-login-api/',admin_login),
+    path('admin-tickets/',AdminTicketsView.as_view()),
+    path('tickets/<int:pk>/delete/',DeleteTicketView.as_view()),
 ]
