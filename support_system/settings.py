@@ -27,9 +27,13 @@ load_dotenv()
 SECRET_KEY = 'django-insecure-@e8bd60g0hn#_%jlhbmr#h51z85=1la^a6v$^a2twn5o4d02=('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "ai-customer-support-ticket-system-1.onrender.com",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
