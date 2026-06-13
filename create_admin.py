@@ -1,7 +1,7 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'support_system.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AI_Customer_Support_Ticket_System.settings')
 django.setup()
 
 from django.contrib.auth.models import User
