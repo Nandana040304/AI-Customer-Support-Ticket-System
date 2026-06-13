@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,9 +27,9 @@ load_dotenv()
 SECRET_KEY = 'django-insecure-@e8bd60g0hn#_%jlhbmr#h51z85=1la^a6v$^a2twn5o4d02=('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["ai-customer-support-ticket-system-1.onrender.com",]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -79,10 +80,16 @@ WSGI_APPLICATION = 'support_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -130,7 +137,3 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
-CSRF_TRUSTED_ORIGINS = [
-    "https://ai-customer-support-ticket-system-1.onrender.com",
-]
-
