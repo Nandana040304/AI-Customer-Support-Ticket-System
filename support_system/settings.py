@@ -133,3 +133,5 @@ REST_FRAMEWORK = {
 CSRF_TRUSTED_ORIGINS = [
     "https://ai-customer-support-ticket-system-1.onrender.com",
 ]
+
+import create_admin
